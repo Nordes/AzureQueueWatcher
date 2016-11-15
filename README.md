@@ -14,6 +14,19 @@ In combinaison with LogStash+Kibana (or other log forwarder + reporting) this ca
 | jobLogName | Y (partial) | string | Name of the job used for the _log file name_ and the _log data_|
 | AZURE_STORAGE_CONNECTION_STRING | Y | string | Azure storage connection string used to connect to the storage Account|
 
+# Start the engine
+From the root folder.
+
+Download the NodeJS dependencies
+```
+npm install
+```
+
+To run
+```
+npm start
+```
+
 # TODO(s)
 * Change the name of the configuration for AZURE_STORAGE_CONNECTION_STRING to have a proper camelcase.
 * Implement the naming of the logfiles
