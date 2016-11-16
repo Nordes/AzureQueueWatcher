@@ -14,7 +14,7 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Attacher to process",
+            "name": "Attach to process",
             "port": 5858
         }
     ]

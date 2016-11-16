@@ -2,15 +2,19 @@
   "name": "azure-queue-watcher",
   "version": "0.0.1",
   "description": "Watch queues inside a Storage Account and generate logs in JSon format.",
+  "url" : "https://github.com/Nordes/AzureQueueWatcher",
+  "repository" : { 
+    "type" : "git",
+    "url" : "https://github.com/Nordes/AzureQueueWatcher.git"
+  },
   "main": "program.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node program.js"
   },
-  "author": "Nordes Menard-Lamarre",
+  "author": "Nordès Ménard-Lamarre",
   "license": "MIT",
   "dependencies": {
-    "azure": "^1.2.0-preview",
     "azure-storage": "^1.3.2",
     "nconf": "^0.8.4"
   },
