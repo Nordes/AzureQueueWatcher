@@ -43,11 +43,24 @@ function getQueueInfo(queueName, iteration){
             console.log(JSON.stringify(log));
 
             // Todo Add the proper date format to log file.
-            fs.appendFile(log.jobLogName + '-yyyy-mm-dd.txt', JSON.stringify(log) + "\r\n", function (err) {
+            var logfile_name = log.jobLogName + '-' + formatDate(new Date()) +'.log'
+            fs.appendFile(logfile_name, JSON.stringify(log) + "\r\n", function (err) {
                 if (err) throw err;
             });
         }
     });
+}
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
 }
 
 // http://www.htmlgoodies.com/beyond/javascript/object.create-the-new-way-to-create-objects-in-javascript.html
