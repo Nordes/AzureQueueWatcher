@@ -15,7 +15,7 @@ In combinaison with LogStash+Kibana (or other log forwarder + reporting) this ca
 | AZURE_STORAGE_CONNECTION_STRING | Y | string | Azure storage connection string used to connect to the storage Account|
 
 # Start the engine
-From the root folder.
+From the root folder, rename the **config.json.conf** to **config.json** and fill the azure configuration connectionstring and the other configurations.
 
 Download the NodeJS dependencies
 ```
