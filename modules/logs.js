@@ -1,5 +1,5 @@
 'use strict'
-class LogFormat{
+class Log{
     constructor(jobLogName, iteration, queueName, messageCount){
         this.timeStamp = new Date().getTime(); // TimeStamp
         this.jobLogName = jobLogName;
@@ -10,5 +10,5 @@ class LogFormat{
 }
 
 module.exports = {
-    create: LogFormat
+    create: Log
 }
