@@ -1,3 +1,4 @@
+'use strict'
 class LogFormat{
     constructor(jobLogName, iteration, queueName, messageCount){
         this.timeStamp = new Date().getTime(); // TimeStamp
