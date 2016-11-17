@@ -29,9 +29,8 @@ npm start
 ```
 
 # TODO(s)
-* Change the name of the configuration for AZURE_STORAGE_CONNECTION_STRING to have a proper camelcase.
+* Give possibility to write into an Azure table instead of a logfile (See MS Azure LogStash tools on GitHub)
 * Implement the naming of the logfiles
 * Create an example with Logstash (index + dashboard template)
 * Maybe try to combine with elastic beats? (not so sure, but it is more lightweight than logstash)
-* Give possibility to write into an Azure table instead of a logfile (See MS Azure LogStash tools on GitHub)
 * ...Waiting for more ideas...
