@@ -28,6 +28,11 @@ To run
 npm start
 ```
 
+To clean the logs
+```
+node program.js --clean
+```
+
 # TODO(s)
 * Give possibility to write into an Azure table instead of a logfile (See MS Azure LogStash tools on GitHub)
 * Implement the naming of the logfiles
