@@ -1,8 +1,8 @@
 'use strict'
 class Log{
-    constructor(jobLogName, iteration, queueName, messageCount){
+    constructor(jobLoggerName, iteration, queueName, messageCount){
         this.timeStamp = new Date().getTime(); // TimeStamp
-        this.jobLogName = jobLogName;
+        this.jobLoggerName = jobLoggerName;
         this.jobIterationSinceStarted = iteration;
         this.queueName = queueName;
         this.approximateMessageCount = messageCount;

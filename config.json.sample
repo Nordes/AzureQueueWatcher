@@ -1,9 +1,10 @@
 {
-    "watchAllQueues": true,
-    "watchIndefinite": true,
-    "watchDelayInMs": 4000,
-    "watchNumberOfExecution": 1,
-    "watchQueueNames": [],
-    "jobLogName": "North-Star",
-    "AZURE_STORAGE_CONNECTION_STRING": "Your own connection string to your azure storage"
+  "watchAllQueues": true,
+  "watchIndefinite": true,
+  "watchDelayInMs": 4000,
+  "watchNumberOfExecution": 1,
+  "watchQueueNames": [],
+  "jobLoggerName": "North-Star",
+  "jobLogFolder": "./logs/",
+  "azureStorageConnectionString": "Your own connection string to your azure storage"
 }
