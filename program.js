@@ -4,8 +4,8 @@ const azureQueueWatcher = require('./modules/azureQueueWatcher');
 const nconf = require('nconf');
 
 nconf.env().file({ file: 'config.json', search: true, format: require('hjson') }).argv();
-const jobSettings = nconf.get("jobSettings");
-const watchSettings = nconf.get("watchSettings");
+const jobSettings = nconf.get('jobSettings');
+const watchSettings = nconf.get('watchSettings');
 
 const aqw = azureQueueWatcher(jobSettings);
 
@@ -17,3 +17,5 @@ if (!nconf.get('clean')) {
 else {
   aqw.clean();
 }
+
+process.exit;

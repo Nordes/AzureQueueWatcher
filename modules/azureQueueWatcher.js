@@ -37,6 +37,9 @@ function azureQueueWatcher(jobSettings) {
     */
     start: function (settings) {
       setTimeout(function () {
+        if (settings.numberOfExecution == 0)
+          return;
+
         var queueSvc = getQueueSvc(settings);
 
         startWatch(settings, queueSvc);
@@ -44,9 +47,9 @@ function azureQueueWatcher(jobSettings) {
     },
 
     stop: function () {
-        // todo
-        // Stop all the "setTimeout"
-        throw new Error('Not implemented');
+      // todo
+      // Stop all the "setTimeout"
+      throw new Error('Not implemented');
     },
 
     /**
@@ -115,8 +118,7 @@ function azureQueueWatcher(jobSettings) {
   function executeWatch(iteration, watchSettings, queueSvc, queueName) {
     queueSvc.getQueueMetadata(queueName, function (error, result, response) {
       if (!error) {
-
-        if (!watchSettings.numberOfExecution >= 0 && iteration+1 <= watchSettings.numberOfExecution) {
+        if (watchSettings.numberOfExecution < 0 || iteration + 1 < watchSettings.numberOfExecution) {
           setTimeout(function () {
             return executeWatch(++iteration, watchSettings, queueSvc, queueName)
           }, watchSettings.delay);
@@ -126,7 +128,7 @@ function azureQueueWatcher(jobSettings) {
         }
 
         // Queue length is available in result.approximateMessageCount
-        
+
         var log = new logs.create(jobSettings.file.loggerName, iteration, queueName, result.approximateMessageCount);
         console.log(JSON.stringify(log));
 
