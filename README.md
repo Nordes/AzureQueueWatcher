@@ -6,14 +6,14 @@ can be very useful in order to monitor what is happening.
 
 # Usage
 Install with ___npm___
-```
+```Shell
 npm install
 ```
 
 Rename the **config.sample.json** to **config.json** and update the content of the file. Once
 it is completed, you can start the application.
 
-```Batchfile
+```Shell
 npm start
 # or 
 node program.js
@@ -24,6 +24,6 @@ Please look into the **config.sample.json** of the current repo.
 
 # Clean all the logs in one shot? 
 Yes, this feature exists. 
-```
+```shell
 node program.js --clean
 ```
