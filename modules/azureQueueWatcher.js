@@ -8,7 +8,7 @@ const azureStorage = require('azure-storage');
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
-const logs = require('./models/Log.js');
+const logs = require('./models/Log');
 const uuid = require('node-uuid');
 
 module.exports = azureQueueWatcher;
