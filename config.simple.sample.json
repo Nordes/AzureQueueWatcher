@@ -1,0 +1,22 @@
+{
+  // Job settings regarding the log name and emplacement
+  "jobSettings": {
+    "loggerType": "file",
+    "file": {
+      "loggerName": "North-Star",
+      "logFolder": "./logs/"
+    }
+  },
+  // Watch settings
+  "watchSettings": [
+    // Multiple azure queue can be watched.
+    {
+      // Azure storage account ConnectionString to access queues
+      "storageConnectionString": "connectionstring to put here",
+      // -1 for infinite.
+      "numberOfExecution": -1,
+      // Delay between execution
+      "delay": 5000
+    }
+  ]
+}
