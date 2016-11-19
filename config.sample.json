@@ -1,10 +1,68 @@
 {
-  "watchAllQueues": true,
-  "watchIndefinite": true,
-  "watchDelayInMs": 4000,
-  "watchNumberOfExecution": 1,
-  "watchQueueNames": [],
-  "jobLoggerName": "North-Star",
-  "jobLogFolder": "./logs/",
-  "azureStorageConnectionString": "Your own connection string to your azure storage"
+  // Job settings regarding the log name and emplacement
+  "jobSettings": {
+    // Logger type : [file|azureTable]
+    "loggerType": "file",
+    "file": {
+      "loggerName": "North-Star",
+      "logFolder": "./logs/"
+    },
+    // [Not implemented]
+    "azureTable": {
+      "enabled": false,
+      // Azure storage account ConnectionString to access queues
+      "storageConnectionString": null,
+      // If storageConnectionString is not given, then we will fall back on the 
+      // Azure storage AccountName and AccountKey
+      "accountName": null,
+      "accountKey": null,
+      // Table name
+      "tableName": null
+    }
+  },
+  // Watch settings
+  "watchSettings": [
+    // Multiple azure queue can be watched.
+    {
+      // Azure storage account ConnectionString to access queues
+      "storageConnectionString": "connectionstring to put here",
+      // If storageConnectionString is not given, then we will fall back on the 
+      // Azure storage AccountName and AccountKey
+      "accountName": null,
+      "accountKey": null,
+      // Empty array|null|undefined will mean all the available queues.
+      // If queues are specified, we will watch only these.
+      "queueNames": [],
+      // -1 for infinite.
+      "numberOfExecution": -1,
+      // Delay between execution
+      "delay": 5000,
+      // [Not implemented] Peek & logs items from the queue [Not implemented]
+      "peek": {
+        "enabled": false,
+        // Minimum number of item in order to peek
+        "min": 0,
+        // Maximum items to take from the queue (25 maximum)
+        "max": 0
+      },
+      // [Not implemented] Global triggers [Not implemented] 
+      "triggers": [
+        {
+          // Name of the queues it applies to
+          "appliesToQueues": [],
+          // Trigger when queue is above...
+          "above": 0,
+          // Number of execution with the trigger activated before doing the action
+          "executionCount": 10,
+          // Action type : [EMail|...(to define)]
+          "actionType": "EMail",
+          "eMail": {
+            "address": "user@mail.com",
+            "title": "a title",
+            "content": "some content ... or template..."
+          }
+        }
+      ]
+    }
+  ]
 }

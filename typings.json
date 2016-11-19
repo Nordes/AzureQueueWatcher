@@ -1,7 +1,7 @@
 {
   "globalDependencies": {
+    "glob": "registry:dt/glob#5.0.10+20160317120654",
     "nconf": "registry:dt/nconf#0.0.0+20160724073144",
-    "node": "registry:dt/node#6.0.0+20161110151007",
-    "node-uuid": "registry:dt/node-uuid#0.0.0+20160316155526"
+    "node": "registry:dt/node#6.0.0+20161110151007"
   }
 }

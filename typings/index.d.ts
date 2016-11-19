@@ -1,1 +1,1 @@
-/// <reference path="globals/node-uuid/index.d.ts" />
+/// <reference path="globals/glob/index.d.ts" />
