@@ -32,7 +32,12 @@
       "accountKey": null,
       // Empty array|null|undefined will mean all the available queues.
       // If queues are specified, we will watch only these.
-      "queueNames": [],
+      "queueNames": [
+        // Queue names can be written as regex format.
+        // Example: 
+        //     will take the [queueName-signal and queuename-signal-poison]
+        //     > "(queueName-signal)(.)*"
+      ],
       // -1 for infinite.
       "numberOfExecution": -1,
       // Delay between execution

@@ -97,12 +97,20 @@ function azureQueueWatcher(jobSettings) {
 
       // should redo a call to listQueuesSegmented if not completed, see token.
       queues.entries.forEach(function (queue) {
-        // TODO
-        // if (queue.Name match anything in my criterias... continue)
-
-        setTimeout(function () {
-          return executeWatch(1, watchSettings, queueSvc, queue.name)
-        }, watchSettings.delay);
+        // If any settings on the queue name, then do the filtering
+        if (watchSettings.queueNames && watchSettings.queueNames.length > 0) {
+          watchSettings.queueNames.forEach(function (watchQueueName) {            
+            if (queue.name.match(new RegExp(watchQueueName))) {
+              setTimeout(function () {
+                return executeWatch(1, watchSettings, queueSvc, queue.name)
+              }, 1);
+            }
+          }, this);
+        } else {
+          setTimeout(function () {
+            return executeWatch(1, watchSettings, queueSvc, queue.name)
+          }, 1);
+        }
       }, this);
     });
   }
@@ -122,8 +130,7 @@ function azureQueueWatcher(jobSettings) {
           setTimeout(function () {
             return executeWatch(++iteration, watchSettings, queueSvc, queueName)
           }, watchSettings.delay);
-        }
-        else {
+        } else {
           console.log(`[${queueName}] Completed maximum number of iteration`);
         }
 
@@ -137,8 +144,7 @@ function azureQueueWatcher(jobSettings) {
         fs.appendFile(logfile_name, `${JSON.stringify(log)}\r\n`, function (err) {
           if (err) throw err;
         });
-      }
-      else {
+      } else {
         throw error;
       }
     });
@@ -166,11 +172,21 @@ function azureQueueWatcher(jobSettings) {
           });
         });
       }
-    }
-    else if (jobSettings.loggerType === 'azureTable') {
+    } else if (jobSettings.loggerType === 'azureTable') {
       // Todo Clean the azure table
       throw new Error('Not implemented');
     }
+  }
+
+  /**
+  * Get the type name of the object.
+  *
+  * @param {object} [obj]               The object to get the type of.
+  *
+  * @returns {string}                   Name of the type (Ex.: regexp).
+  */
+  function toType(obj) {
+    return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
   }
 
   /**
