@@ -3,7 +3,10 @@ const uuid = require('node-uuid');
 
 class Log{
     constructor(jobLoggerName, iteration, queueName, messageCount){
-        this.timeStamp = new Date().getTime(); // TimeStamp
+        // NewRelic needed params
+        this.eventType = "AzureQueueWatcher"; // Experimental
+        // Others..
+        this.timestamp = new Date().getTime(); // TimeStamp
         this.guid = uuid.v4();
         this.loggerName = jobLoggerName;
         this.iterationSinceStarted = iteration;
