@@ -2,10 +2,12 @@
   // Job settings regarding the log name and emplacement
   "jobSettings": {
     "traceLevel": "error",
-    "loggerType": "file",
-    "file": {
-      "loggerName": "North-Star",
-      "logFolder": "./logs/"
+    "loggerType": "azureTable",
+    "azureTable": {
+      // Azure storage account ConnectionString to access the AzureTable storage
+      "storageConnectionString": "connectionstring to put here",
+      // Table name (will be created if not exists)
+      "tableName": "AzureQueueStats"
     }
   },
   // Watch settings

@@ -10,13 +10,13 @@
       "logFolder": "./logs/"
     },
     "azureTable": {
-      // Azure storage account ConnectionString to access queues
+      // Azure storage account ConnectionString to access the AzureTable storage
       "storageConnectionString": null,
       // If storageConnectionString is not given, then we will fall back on the 
       // Azure storage AccountName and AccountKey
       "accountName": null,
       "accountKey": null,
-      // Table name
+      // Table name (will be created if not exists)
       "tableName": null
     }
   },
