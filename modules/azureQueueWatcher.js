@@ -30,7 +30,8 @@ function azureQueueWatcher(jobSettings) {
   winston.level = jobSettings.traceLevel;
 
   // Private var
-  // var queueSvc = getQueueSvc();
+  var tableSvc = null;
+  var retryOperations = new azureStorage.ExponentialRetryPolicyFilter();
 
   // Public methods
   return {
@@ -46,7 +47,28 @@ function azureQueueWatcher(jobSettings) {
 
         var queueSvc = getQueueSvc(settings);
 
-        startWatch(settings, queueSvc);
+        winston.info(`LoggerType: ${jobSettings.loggerType}`)
+        if (jobSettings.loggerType === 'azureTable') {
+          if (jobSettings.azureTable.storageConnectionString)
+            tableSvc = azureStorage.createTableService(jobSettings.azureTable.storageConnectionString).withFilter(retryOperations);
+          else if (jobSettings.azureTable.accountKey && jobSettings.azureTable.accountKey)
+            tableSvc = azureStorage.createTableService(jobSettings.azureTable.accountName, jobSettings.azureTable.accountKey).withFilter(retryOperations);
+          else
+            throw Error("LoggerType: Configuration regarding the Azure Table is incomplete")
+
+          winston.debug(`LoggerType ${jobSettings.loggerType}: Try to create table ${jobSettings.azureTable.tableName} if not exists`)
+          tableSvc.createTableIfNotExists(jobSettings.azureTable.tableName, function (error, result, response) {
+            if (error) {
+              throw new Error('Not able to create the AzureTable');
+            }
+
+            winston.info(`LoggerType ${jobSettings.loggerType}: Table ${jobSettings.azureTable.tableName}`, { 'created': result.created });
+
+            startWatch(settings, queueSvc);
+          });
+        }
+        else // Log files
+          startWatch(settings, queueSvc);
       }, 1)
     },
 
@@ -59,7 +81,7 @@ function azureQueueWatcher(jobSettings) {
     /**
     * Clean existing logs from the current settings (Azure table or file).
     */
-    clean: cleanLogs
+    clean: cleanFileLogs
   };
 
   //
@@ -142,15 +164,10 @@ function azureQueueWatcher(jobSettings) {
         }
 
         // Queue length is available in result.approximateMessageCount
-
         var log = new logs.create(jobSettings.file.loggerName, iteration, queueName, result.approximateMessageCount);
         winston.debug(JSON.stringify(log));
 
-        // Todo Add the proper date format to log file.
-        var logfile_name = `${jobSettings.file.logFolder}${log.loggerName}_${formatDate(new Date())}.log`
-        fs.appendFile(logfile_name, `${JSON.stringify(log)}\r\n`, function (err) {
-          if (err) throw err;
-        });
+        logData(log);
       } else {
         // 5 retry count, else throw the error.
         if (error && error.code === 'ETIMEDOUT' && retryCount <= 5) {
@@ -165,7 +182,7 @@ function azureQueueWatcher(jobSettings) {
   /**
   * Do the actual cleaning of the logs.
   */
-  function cleanLogs() {
+  function cleanFileLogs() {
     if (jobSettings.loggerType === 'file') {
       if (jobSettings.file && jobSettings.file.logFolder) {
         // Clean the log files
@@ -189,6 +206,60 @@ function azureQueueWatcher(jobSettings) {
       // Todo Clean the azure table
       throw new Error('Not implemented');
     }
+  }
+
+  function cleanAzureTableLogs() {
+    throw Error('Not implemented');
+  }
+
+  /**
+  * Send the logs to the proper writer.
+  *
+  * @param {object} [logData]           The content of the log data.
+  */
+  function logData(logData) {
+    // Todo Add the proper date format to log file.
+    switch (jobSettings.loggerType) {
+      case 'file': sendToFile(logData);
+        break;
+      case 'azureTable': sendToAzureTable(logData);
+        break;
+      case 'newRelic': throw new Error('Log to newRelic not implemented');
+      case 'elasticSearch': throw new Error('Log to elasticSearch not implemented');
+      default:
+        throw new Error('This option for logging data does not exists');
+    }
+  }
+
+  /**
+  * Send the logs to a local file.
+  *
+  * @param {object} [logData]           The content of the log data.
+  */
+  function sendToFile(logData) {
+    var logfile_name = `${jobSettings.file.logFolder}${logData.loggerName}_${formatDate(new Date())}.log`;
+    winston.silly('Send log to file', { "fileName": logfile_name });
+
+    fs.appendFile(logfile_name, `${JSON.stringify(logData)}\r\n`, function (err) {
+      if (err) throw err;
+    });
+  }
+
+  /**
+  * Send the logs to azure table.
+  *
+  * @param {object} [logData]           The content of the log data.
+  */
+  function sendToAzureTable(logData) {
+    // Need to convert the logData to a rowData
+    // { PartitionKey: ..., RowKey: ..., ...}
+    var rowData = Object.assign({}, { 'PartitionKey': logData.loggerName, RowKey: logData.guid }, logData)
+
+    tableSvc.insertEntity(jobSettings.azureTable.tableName, rowData, function (error, result, response) {
+      if (error) throw error;
+
+      winston.silly(`Inserted in AzureTable ${jobSettings.azureTable.tableName}`, result);
+    });
   }
 
   /**
