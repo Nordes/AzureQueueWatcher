@@ -102,13 +102,13 @@ function azureQueueWatcher(jobSettings) {
           watchSettings.queueNames.forEach(function (watchQueueName) {            
             if (queue.name.match(new RegExp(watchQueueName))) {
               setTimeout(function () {
-                return executeWatch(1, watchSettings, queueSvc, queue.name)
+                return executeWatch(1, watchSettings, queueSvc, queue.name, 0)
               }, 1);
             }
           }, this);
         } else {
           setTimeout(function () {
-            return executeWatch(1, watchSettings, queueSvc, queue.name)
+            return executeWatch(1, watchSettings, queueSvc, queue.name, 0)
           }, 1);
         }
       }, this);
@@ -122,13 +122,14 @@ function azureQueueWatcher(jobSettings) {
   * @param {object}  [watchSettings]         Watch settings.
   * @param {object}  [queueSvc]              Queue services.
   * @param {string}  [queueName]             Name of the current queue.
+  * @param {int}     [retryCount]                   Number of try
   */
-  function executeWatch(iteration, watchSettings, queueSvc, queueName) {
+  function executeWatch(iteration, watchSettings, queueSvc, queueName, retryCount) {
     queueSvc.getQueueMetadata(queueName, function (error, result, response) {
       if (!error) {
         if (watchSettings.numberOfExecution < 0 || iteration + 1 < watchSettings.numberOfExecution) {
           setTimeout(function () {
-            return executeWatch(++iteration, watchSettings, queueSvc, queueName)
+            return executeWatch(++iteration, watchSettings, queueSvc, queueName, 0);
           }, watchSettings.delay);
         } else {
           console.log(`[${queueName}] Completed maximum number of iteration`);
@@ -145,7 +146,13 @@ function azureQueueWatcher(jobSettings) {
           if (err) throw err;
         });
       } else {
-        throw error;
+        // 5 retry count, else throw the error.
+        if (error && error.code === 'ETIMEDOUT' && retryCount <= 5)
+        {
+          executeWatch(iteration, watchSettings, queueSvc, queueName, ++retryCount);
+        } else {
+           throw error;
+        }
       }
     });
   }
