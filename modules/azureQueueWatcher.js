@@ -46,29 +46,16 @@ function azureQueueWatcher(jobSettings) {
           return;
 
         var queueSvc = getQueueSvc(settings);
+        var watchFn = function () { startWatch(settings, queueSvc) };
 
         winston.info(`LoggerType: ${jobSettings.loggerType}`)
-        if (jobSettings.loggerType === 'azureTable') {
-          if (jobSettings.azureTable.storageConnectionString)
-            tableSvc = azureStorage.createTableService(jobSettings.azureTable.storageConnectionString).withFilter(retryOperations);
-          else if (jobSettings.azureTable.accountKey && jobSettings.azureTable.accountKey)
-            tableSvc = azureStorage.createTableService(jobSettings.azureTable.accountName, jobSettings.azureTable.accountKey).withFilter(retryOperations);
-          else
-            throw Error("LoggerType: Configuration regarding the Azure Table is incomplete")
-
-          winston.debug(`LoggerType ${jobSettings.loggerType}: Try to create table ${jobSettings.azureTable.tableName} if not exists`)
-          tableSvc.createTableIfNotExists(jobSettings.azureTable.tableName, function (error, result, response) {
-            if (error) {
-              throw new Error('Not able to create the AzureTable');
-            }
-
-            winston.info(`LoggerType ${jobSettings.loggerType}: Table ${jobSettings.azureTable.tableName}`, { 'created': result.created });
-
-            startWatch(settings, queueSvc);
-          });
+        switch (jobSettings.loggerType) {
+          case 'azureTable': initAzureTable(watchFn);
+            break;
+          default:
+            initLogFile(watchFn);
+            break;
         }
-        else // Log files
-          startWatch(settings, queueSvc);
       }, 1)
     },
 
@@ -81,12 +68,44 @@ function azureQueueWatcher(jobSettings) {
     /**
     * Clean existing logs from the current settings (Azure table or file).
     */
-    clean: cleanFileLogs
+    clean: function () {
+      winston.info(`LoggerType: ${jobSettings.loggerType}`)
+      switch (jobSettings.loggerType) {
+        case 'azureTable': cleanAzureTableLogs();
+          break;
+        default:
+          cleanFileLogs()
+          break;
+      }
+    }
   };
 
   //
   // Private functions
   //
+  function initLogFile(startWatchFn) {
+    startWatchFn();
+  }
+
+  function initAzureTable(startWatchFn) {
+    if (jobSettings.azureTable.storageConnectionString)
+      tableSvc = azureStorage.createTableService(jobSettings.azureTable.storageConnectionString).withFilter(retryOperations);
+    else if (jobSettings.azureTable.accountKey && jobSettings.azureTable.accountKey)
+      tableSvc = azureStorage.createTableService(jobSettings.azureTable.accountName, jobSettings.azureTable.accountKey).withFilter(retryOperations);
+    else
+      throw Error("LoggerType: Configuration regarding the Azure Table is incomplete")
+
+    winston.debug(`LoggerType ${jobSettings.loggerType}: Try to create table ${jobSettings.azureTable.tableName} if not exists`)
+    tableSvc.createTableIfNotExists(jobSettings.azureTable.tableName, function (error, result, response) {
+      if (error) {
+        throw new Error('Not able to create the AzureTable');
+      }
+
+      winston.info(`LoggerType ${jobSettings.loggerType}: Table ${jobSettings.azureTable.tableName}`, { 'created': result.created });
+
+      startWatchFn();
+    });
+  }
 
   /**
   * Get the queue service based on the settings.
@@ -209,7 +228,7 @@ function azureQueueWatcher(jobSettings) {
   }
 
   function cleanAzureTableLogs() {
-    throw Error('Not implemented');
+    throw Error('Not implemented (Delete the entire table OR delete only data from the PartitionKey)');
   }
 
   /**
