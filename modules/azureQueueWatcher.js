@@ -227,6 +227,9 @@ function azureQueueWatcher(jobSettings) {
     }
   }
 
+  /**
+  * Clean the azure table (logs).
+  */
   function cleanAzureTableLogs() {
     throw Error('Not implemented (Delete the entire table OR delete only data from the PartitionKey)');
   }
