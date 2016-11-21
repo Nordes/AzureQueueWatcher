@@ -10,6 +10,8 @@ const path = require('path');
 const glob = require('glob');
 const logs = require('./models/Log');
 const uuid = require('node-uuid');
+// If converted to a module, should use "debug" instead (cref: https://blog.risingstack.com/node-js-logging-tutorial/)
+const winston = require('winston');
 
 module.exports = azureQueueWatcher;
 
@@ -24,6 +26,8 @@ function azureQueueWatcher(jobSettings) {
   if (!jobSettings) {
     throw new Error("Parameter are not optionnal, but mandatory!")
   }
+
+  winston.level = jobSettings.traceLevel;
 
   // Private var
   // var queueSvc = getQueueSvc();
@@ -99,14 +103,16 @@ function azureQueueWatcher(jobSettings) {
       queues.entries.forEach(function (queue) {
         // If any settings on the queue name, then do the filtering
         if (watchSettings.queueNames && watchSettings.queueNames.length > 0) {
-          watchSettings.queueNames.forEach(function (watchQueueName) {            
+          watchSettings.queueNames.forEach(function (watchQueueName) {
             if (queue.name.match(new RegExp(watchQueueName))) {
+              winston.info(`Registering queue: ${queue.name}`)
               setTimeout(function () {
                 return executeWatch(1, watchSettings, queueSvc, queue.name, 0)
               }, 1);
             }
           }, this);
         } else {
+          winston.info(`Registering queue: ${queue.name}`);
           setTimeout(function () {
             return executeWatch(1, watchSettings, queueSvc, queue.name, 0)
           }, 1);
@@ -138,7 +144,7 @@ function azureQueueWatcher(jobSettings) {
         // Queue length is available in result.approximateMessageCount
 
         var log = new logs.create(jobSettings.file.loggerName, iteration, queueName, result.approximateMessageCount);
-        console.log(JSON.stringify(log));
+        winston.debug(JSON.stringify(log));
 
         // Todo Add the proper date format to log file.
         var logfile_name = `${jobSettings.file.logFolder}${log.loggerName}_${formatDate(new Date())}.log`
@@ -147,11 +153,10 @@ function azureQueueWatcher(jobSettings) {
         });
       } else {
         // 5 retry count, else throw the error.
-        if (error && error.code === 'ETIMEDOUT' && retryCount <= 5)
-        {
+        if (error && error.code === 'ETIMEDOUT' && retryCount <= 5) {
           executeWatch(iteration, watchSettings, queueSvc, queueName, ++retryCount);
         } else {
-           throw error;
+          throw error;
         }
       }
     });
@@ -178,6 +183,7 @@ function azureQueueWatcher(jobSettings) {
             });
           });
         });
+        console.log("-= Done =-");
       }
     } else if (jobSettings.loggerType === 'azureTable') {
       // Todo Clean the azure table
@@ -186,7 +192,7 @@ function azureQueueWatcher(jobSettings) {
   }
 
   /**
-  * Get the type name of the object.
+  * [Not in use] Get the type name of the object.
   *
   * @param {object} [obj]               The object to get the type of.
   *

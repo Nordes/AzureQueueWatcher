@@ -1,6 +1,8 @@
 {
   // Job settings regarding the log name and emplacement
   "jobSettings": {
+    // Trace level [silly|debug|verbose|info|warn|error] (cref: https://github.com/winstonjs/winston)
+    "traceLevel": "info",
     // Logger type : [file|azureTable]
     "loggerType": "file",
     "file": {
