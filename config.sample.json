@@ -9,9 +9,7 @@
       "loggerName": "North-Star",
       "logFolder": "./logs/"
     },
-    // [Not implemented]
     "azureTable": {
-      "enabled": false,
       // Azure storage account ConnectionString to access queues
       "storageConnectionString": null,
       // If storageConnectionString is not given, then we will fall back on the 
