@@ -14,8 +14,8 @@
   "main": "program.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node program.js",
-    "clean": "node program.js --clean"
+    "start": "node app.js",
+    "clean": "node app.js --clean"
   },
   "license": "MIT",
   "keywords": [

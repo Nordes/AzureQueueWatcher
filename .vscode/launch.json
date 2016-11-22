@@ -8,7 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch the program",
-      "program": "${workspaceRoot}\\program.js",
+      "program": "${workspaceRoot}\\app.js",
       "cwd": "${workspaceRoot}",
       "args": [
 //        "--clean"
