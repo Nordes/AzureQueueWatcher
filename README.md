@@ -15,6 +15,13 @@ and how many items are in the poison queues.
  ___Soon___, triggers will be available
 in order to send notification when certain threshold criteria are met.
 
+### Reporting: NewRelic Data Insights example 
+```SQL
+SELECT  average(approximateMessageCount) FROM AzureQueueWatcher since 1 hours ago FACET queueName LIMIT  100 TIMESERIES 1 minutes
+```
+![image](https://cloud.githubusercontent.com/assets/446572/20577536/1541c658-b1c3-11e6-89e1-dc3ff5c59478.png)
+
+
 # Usage
 Install with ___npm___
 ```Shell
@@ -45,12 +52,6 @@ Use the power of LogStash and combine the data analysis/alerts with __NewRelic__
 
 Templates can be found in _templates/logstash_ folder. After entering some basic configuration you will be ready to go. 
 Launch LogStash and then launch the AzureQueueWatcher.
-
-### NewRelic Data Insights example 
-```SQL
-SELECT  average(approximateMessageCount) FROM AzureQueueWatcher since 1 hours ago FACET queueName LIMIT  100 TIMESERIES 1 minutes
-```
-![image](https://cloud.githubusercontent.com/assets/446572/20577536/1541c658-b1c3-11e6-89e1-dc3ff5c59478.png)
 
 ## Install as a Windows Service
 _Not yet implemented_
