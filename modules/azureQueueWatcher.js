@@ -12,6 +12,8 @@ const logs = require('./models/Log');
 const uuid = require('node-uuid');
 // If converted to a module, should use "debug" instead (cref: https://blog.risingstack.com/node-js-logging-tutorial/)
 const winston = require('winston');
+// Use https://nodejs.org/api/child_process.html in order to have real multithread instead of setTimeout.
+// INFO tips ... http://solutionoptimist.com/2013/12/28/awesome-github-tricks/
 
 module.exports = azureQueueWatcher;
 
@@ -148,14 +150,14 @@ function azureQueueWatcher(jobSettings) {
             if (queue.name.match(new RegExp(watchQueueName))) {
               winston.info(`Registering queue: ${queue.name}`)
               setTimeout(function () {
-                return executeWatch(1, watchSettings, queueSvc, queue.name, 0)
+                return executeWatch(1, watchSettings, queueSvc, queue.name, 0);
               }, 1);
             }
           }, this);
         } else {
           winston.info(`Registering queue: ${queue.name}`);
           setTimeout(function () {
-            return executeWatch(1, watchSettings, queueSvc, queue.name, 0)
+            return executeWatch(1, watchSettings, queueSvc, queue.name, 0);
           }, 1);
         }
       }, this);
@@ -344,5 +346,10 @@ function azureQueueWatcher(jobSettings) {
     if (day.length < 2) day = '0' + day;
 
     return [year, month, day].join('-');
+  }
+
+  function sleep(seconds) {
+    var e = new Date().getTime() + (seconds * 1000);
+    while (new Date().getTime() <= e) { }
   }
 }

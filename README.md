@@ -27,7 +27,7 @@ it is completed, you can start the application.
 ```Shell
 npm start
 # or 
-node program.js
+node app.js
 ```
 
 # Configuration
@@ -36,17 +36,20 @@ Please look into the **config.sample.json** of the current repo.
 # Options?
 ## Clean logs folder
 ```shell
-node program.js --clean
+node app.js --clean
 ```
 
 # Features
 ## LogStash
-Use the power of LogStash and combine the data analysis/alerts with NewRelic OR Kibana/ElasticSearch (AKA ELK).
+Use the power of LogStash and combine the data analysis/alerts with New Relic OR Kibana/ElasticSearch (AKA ELK).
 
 Templates can be found in _templates/logstash_ folder. After entering some basic configuration you will be ready to go. 
 Launch LogStash and then launch the AzureQueueWatcher.
 
 _todo add an animated gif_
+
+## Send directly to NewRelic Insights
+_Not yet implemented_
 
 ## Install as a Windows Service
 _Not yet implemented_
