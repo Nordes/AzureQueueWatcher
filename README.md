@@ -41,11 +41,15 @@ node program.js --clean
 
 # Features
 ## LogStash
-Use the power of LogStash and combine the data analysis/alerts with NewRelic OR Kibana/ElasticSearch (AKA ELK).
+Use the power of LogStash and combine the data analysis/alerts with __NewRelic__ OR __Kibana/ElasticSearch__ (_AKA ELK_).
 
 Templates can be found in _templates/logstash_ folder. After entering some basic configuration you will be ready to go. 
 Launch LogStash and then launch the AzureQueueWatcher.
 
+### NewRelic Data Insights example 
+```SQL
+SELECT  average(approximateMessageCount) FROM AzureQueueWatcher since 1 hours ago FACET queueName LIMIT  100 TIMESERIES 1 minutes
+```
 ![image](https://cloud.githubusercontent.com/assets/446572/20577536/1541c658-b1c3-11e6-89e1-dc3ff5c59478.png)
 
 ## Install as a Windows Service
