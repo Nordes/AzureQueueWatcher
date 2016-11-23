@@ -46,7 +46,7 @@ Use the power of LogStash and combine the data analysis/alerts with NewRelic OR 
 Templates can be found in _templates/logstash_ folder. After entering some basic configuration you will be ready to go. 
 Launch LogStash and then launch the AzureQueueWatcher.
 
-_todo add an animated gif_
+![image](https://cloud.githubusercontent.com/assets/446572/20577536/1541c658-b1c3-11e6-89e1-dc3ff5c59478.png)
 
 ## Install as a Windows Service
 _Not yet implemented_
