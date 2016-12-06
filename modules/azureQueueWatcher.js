@@ -185,7 +185,7 @@ function azureQueueWatcher(jobSettings) {
         }
 
         // Queue length is available in result.approximateMessageCount
-        var log = new logs.create(jobSettings.file.loggerName, iteration, queueName, result.approximateMessageCount);
+        var log = new logs.create(jobSettings.file.loggerName, iteration, queueName, result.approximateMessageCount, watchSettings.tag);
         winston.debug(JSON.stringify(log));
 
         logData(log);

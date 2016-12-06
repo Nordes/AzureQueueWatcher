@@ -24,6 +24,8 @@
   "watchSettings": [
     // Multiple azure queue can be watched.
     {
+      // Quite useful if you use new relic or other tool in order to know which environment or else it comes from
+      "tag": "Production",
       // Azure storage account ConnectionString to access queues
       "storageConnectionString": "connectionstring to put here",
       // If storageConnectionString is not given, then we will fall back on the 
